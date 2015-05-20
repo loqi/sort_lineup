@@ -14,9 +14,10 @@ var sampleSizeAr =
   ,  1000 ,  2000 ,  3000 ,  4000 ,  5000 ,  6000 ,  7000 ,  8000 ,  9000
   , 10000 , 20000 , 30000 , 40000 , 50000 , 60000 , 70000 , 80000 , 90000
   ,   1e5 ,   2e5 ,   3e5 ,   4e5 ,   5e5 ,   6e5 ,   7e5 ,   8e5 ,   9e5
-  ,   1e6 ,   2e6 // ,   3e6 ,   4e6
+  ,   1e6 ,   2e6 ,   3e6 ,   4e6 ,   5e6 ,   6e6 ,   7e6 ,   8e6 ,   9e6
+  // ,   1e7 ,   2e7 ,   3e7
   ];
-var leaderboard = {}; // { string_name_of_algorithm : records_sorted_per_second , ..}
+var leaderboard = {}; // { string_name_of_algorithm : [ records_sorted , ms_consumed ] , ..}
 var temp;             // defined in closure so it's always ready to go for swaps.
 
 // Elementary sort algorithms: quadratic time ------------------------------
@@ -146,8 +147,8 @@ function quicksort(ar) {
 // Time complexity O(n log n) Space complexity O(log n)
 // Performs quicksort on the array, recursing down to segments of length
 // 20 or shorter, and performs insertion sort on these short segments.
-function inser25Quicksort(ar) {
-  return iqSort(ar, 0, ar.length-1, 25), ar;
+function inser30Quicksort(ar) {
+  return iqSort(ar, 0, ar.length-1, 30), ar;
 }
 
 // HEAP SORT (non-stable sort)
@@ -246,7 +247,7 @@ function choosePiv(ar, lo, hi) {
 // TEST CODE ------------------------------
 
 var sortNameAr  = [ 'quicksort'
-                  , 'inser25Quicksort'
+                  , 'inser30Quicksort'
                   , 'topDownMergeSort'
                   , 'bottomUpMergeSort'
                   , 'heapsort'
@@ -264,7 +265,7 @@ var sortFuncTab =
   , bottomUpMergeSort   : bottomUpMergeSort
   , javascriptSort      : javascriptSort
   , quicksort           : quicksort
-  , inser25Quicksort    : inser25Quicksort
+  , inser30Quicksort    : inser30Quicksort
   , heapsort            : heapsort
   };
 
@@ -308,7 +309,7 @@ for (namIx = 0 ; namIx < sortNameAr.length ; ++namIx) { thisSortName = sortNameA
     time = Date.now()-time;
     console.log(thisSortName+": "+sampleSize+" float64 numbers in "+time+" ms.");
     if (!isAscending(sortAr)) { console.log("    Incorrectly sorted results!"); }
-    leaderboard[thisSortName] = sampleSize/time; // elements / milliseconds
+    leaderboard[thisSortName] = [ sampleSize , time ];
     if (time > 3000) break; // Go until a run exceeds three seconds.
   }
 }
@@ -316,10 +317,11 @@ for (namIx = 0 ; namIx < sortNameAr.length ; ++namIx) { thisSortName = sortNameA
 // Build leaderboard summary and console.log it to the user
 var summaryAr = Object.keys(leaderboard); // [ alg_name, ..]
 for (i = 0 ; i<summaryAr.length ; i++) {
-  summaryAr[i] = [ leaderboard[summaryAr[i]] , summaryAr[i] ];
-} // [ [elements/ms, alg_name] ]
-summaryAr.sort( function(a,b){return b[0]-a[0];} );
+  summaryAr[i] = leaderboard[summaryAr[i]].concat([summaryAr[i]]);
+} // [ [num_of_elements, num_of_ms, alg_name] , .. ]
+summaryAr.sort( function(a,b){ return (a[0]===b[0]) ? a[1]-b[1] : b[0]-a[0]; });
 console.log('\n\n');
 for (i = 0 ; i<summaryAr.length ; i++) {
-  console.log( '#'+(i+1)+' '+summaryAr[i][1]+' - '+Math.round(summaryAr[i][0])+' elements per ms.' );
+  console.log( '#'+(i+1)+' '+summaryAr[i][2]+"\t"+summaryAr[i][0]+' elements in '+
+    summaryAr[i][1]+' ms. '+Math.round(summaryAr[i][0]/summaryAr[i][1])+' el/ms.' );
 }

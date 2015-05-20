@@ -8,7 +8,7 @@ This code loads no libraries. Sort algorithms are implemented in ES5, optimized 
 Typical fastest-to-slowest results on large arrays of stochastic numerics:
 
 Linearithmic sorts.
-* insertion-at-25 plus Quicksort
+* Quicksort to within 30, then insertion sort
 * Quicksort
 * bottom-up merge sort - allocates O(n) extra memory
 * heap sort
