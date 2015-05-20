@@ -16,8 +16,8 @@ Linearithmic sorts.
 * JavaScript sort
 
 Elementary sorts.
-* bubble sort
-* selection sort
 * insertion sort
+* selection sort
+* bubble sort
 
 Your results may vary. If you have many background processes running, and especially if you have browser windows open with animation-heavy images, you may get distorted results and out-of-sequence performance rankings.
