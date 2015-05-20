@@ -13,11 +13,11 @@ var sampleSizeAr =
   ,   100 ,   200 ,   300 ,   400 ,   500 ,   600 ,   700 ,   800 ,   900
   ,  1000 ,  2000 ,  3000 ,  4000 ,  5000 ,  6000 ,  7000 ,  8000 ,  9000
   , 10000 , 20000 , 30000 , 40000 , 50000 , 60000 , 70000 , 80000 , 90000
-  ,   1e5 ,   2e5 ,   3e5 ,   4e5 ,   5e5 ,   6e5 ,   7e5 ,   8e5  ,  9e5
-  ,   1e6 ,   2e6 ,   3e6 ,   4e6
+  ,   1e5 ,   2e5 ,   3e5 ,   4e5 ,   5e5 ,   6e5 ,   7e5 ,   8e5 ,   9e5
+  ,   1e6 ,   2e6 // ,   3e6 ,   4e6
   ];
-
-var temp;
+var leaderboard = {}; // { string_name_of_algorithm : records_sorted_per_second , ..}
+var temp;             // defined in closure so it's always ready to go for swaps.
 
 // Elementary sort algorithms: quadratic time ------------------------------
 
@@ -150,6 +150,11 @@ function inser25Quicksort(ar) {
   return iqSort(ar, 0, ar.length-1, 25), ar;
 }
 
+// HEAP SORT (non-stable sort)
+// Time complexity O(n log n) Space complexity O(n)
+// Builds a heap in place in the array. Then progressively swaps the top of the heap
+// with the bottom, which makes the heap area shrink while the sorted area grows
+// until the heap is gone.
 function heapsort(ar) {
   var heapLen;
   // Assume ar[0..riserIx-1] is a heap. Rises ar[riserIx] to its rightful position.
@@ -213,7 +218,7 @@ function iqSort(ar, lo, hi, mesh) {
 // Chooses pivot in ar[lo..hi]. Partitions elements around it. Returns pivot's final index.
 function qsPartition(ar, lo, hi) {
   var i, j, pivVal;
-  pivVal = ar[i = choosePiv(ar, lo, hi)];
+  pivVal = ar[  i = choosePiv(ar, lo, hi)  ];
   ar[i] = ar[hi];   ar[hi] = pivVal;
   i = lo;   j = hi-1;
   while (true) {
@@ -303,6 +308,18 @@ for (namIx = 0 ; namIx < sortNameAr.length ; ++namIx) { thisSortName = sortNameA
     time = Date.now()-time;
     console.log(thisSortName+": "+sampleSize+" float64 numbers in "+time+" ms.");
     if (!isAscending(sortAr)) { console.log("    Incorrectly sorted results!"); }
-    if (time > 5000) break; // Go until a run exceeds five seconds.
+    leaderboard[thisSortName] = sampleSize/time; // elements / milliseconds
+    if (time > 3000) break; // Go until a run exceeds three seconds.
   }
+}
+
+// Build leaderboard summary and console.log it to the user
+var summaryAr = Object.keys(leaderboard); // [ alg_name, ..]
+for (i = 0 ; i<summaryAr.length ; i++) {
+  summaryAr[i] = [ leaderboard[summaryAr[i]] , summaryAr[i] ];
+} // [ [elements/ms, alg_name] ]
+summaryAr.sort( function(a,b){return b[0]-a[0];} );
+console.log('\n\n');
+for (i = 0 ; i<summaryAr.length ; i++) {
+  console.log( '#'+(i+1)+' '+summaryAr[i][1]+' - '+Math.round(summaryAr[i][0])+' elements per ms.' );
 }
