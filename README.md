@@ -8,16 +8,16 @@ This code loads no libraries. Sort algorithms are implemented in ES5, optimized 
 Typical fastest-to-slowest results on large arrays of stochastic numerics:
 
 Linearithmic sorts.
-* inser25Quicksort
-* quicksort
-* bottomUpMergeSort - allocates O(n) extra memory
-* heapsort
-* topDownMergeSort - allocates O(n) extra memory
-* javascriptSort
+* insertion-at-25 plus Quicksort
+* Quicksort
+* bottom-up merge sort - allocates O(n) extra memory
+* heap sort
+* top-down merge sort - allocates O(n) extra memory
+* javascript sort
 
 Elementary sorts.
-* bubbleSort
-* selectionSort
-* insertionSort
+* bubble sort
+* selection sort
+* insertion sort
 
-Your results may vary. If you have many background processes running, and especially if you have browser windows open with animation-heavy images, you may get extremely distorted results and unusual results rankings.
+Your results may vary. If you have many background processes running, and especially if you have browser windows open with animation-heavy images, you may get distorted results and out-of-sequence performance rankings.
