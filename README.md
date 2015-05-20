@@ -13,7 +13,7 @@ Linearithmic sorts.
 * bottom-up merge sort - allocates O(n) extra memory
 * heap sort
 * top-down merge sort - allocates O(n) extra memory
-* javascript sort
+* JavaScript sort
 
 Elementary sorts.
 * bubble sort
