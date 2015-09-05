@@ -1,5 +1,5 @@
 // Famous sort algorithms in JavaScript 5
-// Implementation by Park Loqi
+// Implementation by Park Loqi - github.com/loqi
 // Running this script will create a large array of pseudorandom
 // numbers and then run each of the sorting algorithms against
 // this array, comparing runtime performance.
@@ -82,7 +82,7 @@ function insertionSort(ar) {
 // // Quasi-linear time complexity algorithms below.
 
 // TOP-DOWN MERGE SORT (stable sort)
-// Time complexity O(n log n) Space complexity O(n log n)
+// Time complexity O(n log n) Space complexity O(n log n) due to recursively saving copies
 // Copies left and right halves of array and recursively merge-sorts them.
 // Merges these two sorted half-length arrays into original elements of `ar`.
 function topDownMergeSort(ar) {
@@ -103,7 +103,7 @@ function topDownMergeSort(ar) {
 // Copies entire `ar` to a buffer.
 // Alternately merges between temporary buffer and original array.
 // Merges all pairs of singles to doubles, then all pairs of doubles to quads,
-// and so on. Final pass is guaranteed to be merged into original array elements.
+// and so on. Final pass is guaranteed to be written into original array.
 function bottomUpMergeSort(ar) {
   if (ar.length < 2) return;
   var mergeCount = log2Ceil(ar.length);
@@ -136,10 +136,17 @@ function javascriptSort(ar) {
 
 // QUICKSORT (non-stable sort)
 // Time complexity O(n log n) Space complexity O(log n)
-// Selects one pivot element of `ar` and then partitions the all lesser
-// elements to the left of that pivot and greater elements to the right.
-// Recursively quicksorts the left partition and then the right partition.
-function quicksort(ar) {
+// Selects one pivot element of `ar` and then partitions all lesser
+// elements to the left of that pivot and greater elements to the right,
+// with pivot landing it its rightful position. Recursively quicksorts
+// the left partition and then the right partition.
+var qsPartition; // Closure variable pointing to prefered Quicksort partition function.
+function quicksortForward(ar) {
+  qsPartition = qsPartitionForward;
+  return qSort(ar, 0, ar.length-1), ar;
+}
+function quicksortInward(ar) {
+  qsPartition = qsPartitionInward;
   return qSort(ar, 0, ar.length-1), ar;
 }
 
@@ -147,14 +154,14 @@ function quicksort(ar) {
 // Time complexity O(n log n) Space complexity O(log n)
 // Performs quicksort on the array, recursing down to segments of length
 // 20 or shorter, and performs insertion sort on these short segments.
-function inser30Quicksort(ar) {
-  return iqSort(ar, 0, ar.length-1, 30), ar;
+function inser15Quicksort(ar) {
+  return iqSort(ar, 0, ar.length-1, 15), ar;
 }
 
 // HEAP SORT (non-stable sort)
 // Time complexity O(n log n) Space complexity O(n)
-// Builds a heap in place in the array. Then progressively swaps the top of the heap
-// with the bottom, which makes the heap area shrink while the sorted area grows
+// Builds a max-heap in place in the array. Then progressively swaps the top of the
+// heap with the bottom, which makes the heap area shrink while the sorted area grows
 // until the heap is gone.
 function heapsort(ar) {
   var heapLen;
@@ -217,7 +224,8 @@ function iqSort(ar, lo, hi, mesh) {
 }
 
 // Chooses pivot in ar[lo..hi]. Partitions elements around it. Returns pivot's final index.
-function qsPartition(ar, lo, hi) {
+// This flavor of partition scans toward the middle from both ends, swapping any out-of-place elements.
+function qsPartitionInward(ar, lo, hi) {
   var i, j, pivVal;
   pivVal = ar[  i = choosePiv(ar, lo, hi)  ];
   ar[i] = ar[hi];   ar[hi] = pivVal;
@@ -230,6 +238,22 @@ function qsPartition(ar, lo, hi) {
   }
   ar[hi] = ar[i];   ar[i] = pivVal;
   return i;
+}
+
+// Chooses pivot in ar[lo..hi]. Partitions elements around it. Returns pivot's final index.
+// This flavor of partition scans ar[lo..hi], tossing backward any elements that belong left of pivot.
+function qsPartitionForward(ar, lo, hi) {
+  var i, j, pivVal;
+  pivVal = ar[  i = choosePiv(ar, lo, hi)  ];
+  ar[i] = ar[hi];   ar[hi] = pivVal;
+  i = lo-1;   j = lo;
+  while (++i < hi) {
+    if (ar[i] < pivVal) {
+      temp = ar[i];  ar[i] = ar[j];  ar[j++] = temp;
+    }
+  }
+  ar[hi] = ar[j];   ar[j] = pivVal;
+  return j;
 }
 
 // Chooses a pivot element and returns the index of that pivot element.
@@ -246,28 +270,20 @@ function choosePiv(ar, lo, hi) {
 
 // TEST CODE ------------------------------
 
-var sortNameAr  = [ 'quicksort'
-                  , 'inser30Quicksort'
-                  , 'topDownMergeSort'
-                  , 'bottomUpMergeSort'
-                  , 'heapsort'
-                  , 'javascriptSort'
-                  , 'bubbleSort'
-                  , 'selectionSort'
-                  , 'insertionSort'
-                  ];
-
 var sortFuncTab =
-  { bubbleSort          : bubbleSort
-  , selectionSort       : selectionSort
-  , insertionSort       : insertionSort
-  , topDownMergeSort    : topDownMergeSort
-  , bottomUpMergeSort   : bottomUpMergeSort
-  , javascriptSort      : javascriptSort
-  , quicksort           : quicksort
-  , inser30Quicksort    : inser30Quicksort
-  , heapsort            : heapsort
+  { // bubbleSort          : bubbleSort
+//   , selectionSort       : selectionSort
+//   , insertionSort       : insertionSort
+//   , topDownMergeSort    : topDownMergeSort
+//   , bottomUpMergeSort   : bottomUpMergeSort
+//   , javascriptSort      : javascriptSort
+//   ,
+    quicksortForward           : quicksortForward
+    ,quicksortInward : quicksortInward
+  // , inser15Quicksort    : inser15Quicksort
+  // , heapsort            : heapsort
   };
+var sortNameAr  = Object.keys(sortFuncTab);
 
 // Returns true unless a higher element is followed by a lower element.
 function isAscending(ar){
@@ -286,7 +302,8 @@ var testAr = [];
 var x, y, resetAfter, i;
 // Load testAr with a few thousand real pseudo-randoms
 i = 100000 ; while (i--) { testAr.push( Math.random() ); }
-// Append testAr with a few million more pseudo-pseudo-randoms
+// Append testAr with a few million more pseudo-pseudo-randoms.
+// Prohibitively long run time to use Math.random so many times.
 while (testAr.length < testArLen) {
   x = Math.floor(Math.random()*testAr.length);
   y = Math.floor(Math.random()*testAr.length);
