@@ -3,9 +3,7 @@
 Executable JavaScript.
 Lightweight performance benchmarks of classic sorting algorithms.
 
-This code loads no libraries. Sort algorithms are implemented in ES5, optimized for runtime speed performance.
-
-Typical fastest-to-slowest results on large arrays of stochastic floating-point values:
+This code loads no libraries. Sort algorithms are implemented in ES5, optimized for runtime speed performance. Typical fastest-to-slowest results on large arrays of stochastic floating-point values are shown below.
 
 Linearithmic sorts:
 
