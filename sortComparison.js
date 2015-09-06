@@ -271,17 +271,16 @@ function choosePiv(ar, lo, hi) {
 // TEST CODE ------------------------------
 
 var sortFuncTab =
-  { // bubbleSort          : bubbleSort
-//   , selectionSort       : selectionSort
-//   , insertionSort       : insertionSort
-//   , topDownMergeSort    : topDownMergeSort
-//   , bottomUpMergeSort   : bottomUpMergeSort
-//   , javascriptSort      : javascriptSort
-//   ,
-    quicksortForward           : quicksortForward
-    ,quicksortInward : quicksortInward
-  // , inser15Quicksort    : inser15Quicksort
-  // , heapsort            : heapsort
+  { bubbleSort          : bubbleSort
+  , selectionSort       : selectionSort
+  , insertionSort       : insertionSort
+  , topDownMergeSort    : topDownMergeSort
+  , bottomUpMergeSort   : bottomUpMergeSort
+  , javascriptSort      : javascriptSort
+  , quicksortForward    : quicksortForward
+  , quicksortInward     : quicksortInward
+  , inser15Quicksort    : inser15Quicksort
+  , heapsort            : heapsort
   };
 var sortNameAr  = Object.keys(sortFuncTab);
 
