@@ -271,16 +271,16 @@ function choosePiv(ar, lo, hi) {
 // TEST CODE ------------------------------
 
 var sortFuncTab =
-  { bubbleSort          : bubbleSort
-  , selectionSort       : selectionSort
-  , insertionSort       : insertionSort
-  , topDownMergeSort    : topDownMergeSort
-  , bottomUpMergeSort   : bottomUpMergeSort
-  , javascriptSort      : javascriptSort
-  , quicksortForward    : quicksortForward
-  , quicksortInward     : quicksortInward
-  , inser15Quicksort    : inser15Quicksort
-  , heapsort            : heapsort
+  { "bubbleSort         " : bubbleSort
+  , "selectionSort      " : selectionSort
+  , "insertionSort      " : insertionSort
+  , "topDownMergeSort   " : topDownMergeSort
+  , "bottomUpMergeSort  " : bottomUpMergeSort
+  , "javascriptSort     " : javascriptSort
+  , "quicksortForward   " : quicksortForward
+  , "quicksortInward    " : quicksortInward
+  , "inser15Quicksort   " : inser15Quicksort
+  , "heapsort           " : heapsort
   };
 var sortNameAr  = Object.keys(sortFuncTab);
 
@@ -323,7 +323,7 @@ for (namIx = 0 ; namIx < sortNameAr.length ; ++namIx) { thisSortName = sortNameA
     time = Date.now();
     sortAr = thisSortFunc(sortAr);
     time = Date.now()-time;
-    console.log(thisSortName+": "+sampleSize+" float64 numbers in "+time+" ms.");
+    console.log(thisSortName+sampleSize+"\tfloat64 numbers in "+time+" ms.");
     if (!isAscending(sortAr)) { console.log("    Incorrectly sorted results!"); }
     leaderboard[thisSortName] = [ sampleSize , time ];
     if (time > 3000) break; // Go until a run exceeds three seconds.
@@ -338,6 +338,6 @@ for (i = 0 ; i<summaryAr.length ; i++) {
 summaryAr.sort( function(a,b){ return (a[0]===b[0]) ? a[1]-b[1] : b[0]-a[0]; });
 console.log('\n\n');
 for (i = 0 ; i<summaryAr.length ; i++) {
-  console.log( '#'+(i+1)+' '+summaryAr[i][2]+"\t"+summaryAr[i][0]+' elements in '+
+  console.log( '#'+(i+1)+' '+summaryAr[i][2]+"\t"+summaryAr[i][0]+'\telements in '+
     summaryAr[i][1]+' ms. '+Math.round(summaryAr[i][0]/summaryAr[i][1])+' el/ms.' );
 }
